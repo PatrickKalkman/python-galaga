@@ -1,4 +1,5 @@
 import pygame
+import constants
 
 
 class Game(object):
@@ -6,7 +7,7 @@ class Game(object):
         self.done = False
         self.screen = screen
         self.clock = pygame.time.Clock()
-        self.fps = 30
+        self.fps = constants.FPS
         self.states = states
         self.state_name = start_state
         self.state = self.states[self.state_name]
@@ -32,6 +33,7 @@ class Game(object):
         self.state.update(dt)
 
     def draw(self):
+        self.screen.fill((0, 0, 0))
         self.state.draw(self.screen)
 
     def run(self):
