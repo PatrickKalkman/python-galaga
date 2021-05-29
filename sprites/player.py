@@ -39,6 +39,6 @@ class Player(pygame.sprite.Sprite):
     def get_surf(self):
         if self.timer % self.interval == 0:
             self.image_index += 1
-        if self.image_index >= self.number_of_images:
-            self.image_index = 0
+            if self.image_index >= self.number_of_images:
+                self.image_index = 0
         return self.images[self.image_index]
