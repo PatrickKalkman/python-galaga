@@ -8,38 +8,22 @@ class BezierControlPointCollectionFactory():
         bezier_point_quartet_collection = []
 
         bezier_point_quartet_collection.append(BezierControlPointQuartet(
-            400.0, 119.0,
-            560.0, 17.0,
-            1599.0, 254.0,
-            240.0, 364.0
+            189, 119,
+            56, 17,
+            203, 254,
+            240, 364
         ))
 
         bezier_point_quartet_collection.append(BezierControlPointQuartet(
-            240.0, 364.0,
-            259.0, 504.0,
-            1599.0, 604.0,
-            400.0, 119.0,
-        ))
-
-        bezier_point_quartet_collection.append(BezierControlPointQuartet(
-            400.0, 119.0,
-            159.0, 304.0,
-            199.0, 304.0,
-            139.0, 264.0
-        ))
-
-        bezier_point_quartet_collection.append(BezierControlPointQuartet(
-            139.0, 264.0,
-            259.0, 204.0,
-            299.0, 204.0,
-            40.0, 164.0
-        ))
-
-        bezier_point_quartet_collection.append(BezierControlPointQuartet(
-            40.0, 164.0,
-            259.0, 1204.0,
-            399.0, 154.0,
-            400.0, 119.0
+            240, 364,
+            259, 904,
+            299, 904,
+            189, 119,
         ))
 
         return bezier_point_quartet_collection
+
+# The basic tricks in getting this to be a smooth curve across the whole path is to:
+# p3 of the each segment is in common to p0 of next each segment.
+# To make the circular, p3 of last segment must be same as p0 of 1st segment.
+# p2 and p3 of each segment must be on a strait line with p0 and p1 or the next segment. So this means 

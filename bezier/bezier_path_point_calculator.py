@@ -9,21 +9,19 @@ class BezierPathPointCalculator():
                              BezierControlPointQuartet, time_to_calculate: float):
         time: float = time_to_calculate - int(time_to_calculate)
 
-        cx: float = 3.0 * (bezier_control_point_quartet.x1 - bezier_control_point_quartet.x0)
-        cy: float = 3.0 * (bezier_control_point_quartet.y1 - bezier_control_point_quartet.y0)
+        cx: float = 3.0 * (bezier_control_point_quartet.get(1).x - bezier_control_point_quartet.get(0).x)
+        cy: float = 3.0 * (bezier_control_point_quartet.get(1).y - bezier_control_point_quartet.get(0).y)
 
-        bx: float = 3.0 * (bezier_control_point_quartet.x2 - bezier_control_point_quartet.x1) - cx
-        by: float = 3.0 * (bezier_control_point_quartet.y2 - bezier_control_point_quartet.y1) - cy
+        bx: float = 3.0 * (bezier_control_point_quartet.get(2).x - bezier_control_point_quartet.get(1).x) - cx
+        by: float = 3.0 * (bezier_control_point_quartet.get(2).y - bezier_control_point_quartet.get(1).y) - cy
 
-        ax: float = bezier_control_point_quartet.x3 - bezier_control_point_quartet.x0 - cx - bx
-        ay: float = bezier_control_point_quartet.y3 - bezier_control_point_quartet.y0 - cy - by
+        ax: float = bezier_control_point_quartet.get(3).x - bezier_control_point_quartet.get(0).x - cx - bx
+        ay: float = bezier_control_point_quartet.get(3).y - bezier_control_point_quartet.get(0).y - cy - by
 
         cube: float = time * time * time
         square: float = time * time
 
-        resx: float = (ax * cube) + (bx * square) + (cx * time) + \
-            bezier_control_point_quartet.x0
-        resy: float = (ay * cube) + (by * square) + (cy * time) + \
-            bezier_control_point_quartet.y0
+        resx: float = (ax * cube) + (bx * square) + (cx * time) + bezier_control_point_quartet.get(0).x
+        resy: float = (ay * cube) + (by * square) + (cy * time) + bezier_control_point_quartet.get(0).y
 
         return BezierPathPoint(resx, resy)

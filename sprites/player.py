@@ -24,6 +24,9 @@ class Player(pygame.sprite.Sprite):
             center=(constants.SCREEN_WIDTH / 2, constants.SCREEN_HEIGHT - 40))
         self.image_index = 0
 
+    def get_event(self, event):
+        pass
+
     def update(self, pressed_keys):
         self.timer += 1
         if pressed_keys[K_LEFT]:

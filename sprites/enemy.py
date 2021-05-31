@@ -30,13 +30,16 @@ class Enemy(pygame.sprite.Sprite):
         self.control_points = BezierControlPointCollectionFactory.create_demo_collection()
         self.calculator = BezierPathPointCalculator()
 
+    def get_event(self, event):
+        pass
+
+
     def update(self, keys):
         self.timer += 1
-        self.bezier_timer += 0.02
+        self.bezier_timer += 0.006
         if int(self.bezier_timer) > len(self.control_points) - 1:
             self.bezier_timer = 0
         control_point_index = int(self.bezier_timer)
-        print(control_point_index)
         path_point = self.calculator.calculate_path_point(self.control_points[control_point_index],
                                                           self.bezier_timer)
         self.rect.centerx = path_point.xpos

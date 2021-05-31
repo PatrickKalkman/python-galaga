@@ -28,6 +28,9 @@ class Rocket(pygame.sprite.Sprite):
         if self.rect.bottom < 0:
             self.kill()
 
+    def get_event(self, event):
+        pass
+
     def get_surf(self):
         if self.timer % self.interval == 0:
             self.image_index += 1
