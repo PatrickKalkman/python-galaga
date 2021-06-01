@@ -118,34 +118,46 @@ class ControlPoint(pygame.sprite.Sprite):
 
             return (related_cp_index, related_p_index)
 
-        # public ControlPointHandlerId FindRelatedControlPoint(ControlPointHandlerId controlPoint)
-        # {
-        #     var controlPointHandler = new ControlPointHandlerId()
 
-        #     if (controlPoint.ControlPointIndex == 1)
+        # public ControlPointHandlerId[] FindControlPointsOfPathPoint(ControlPointHandlerId pathPoint)
+        # {
+        #     var relatedControlPoints = new ControlPointHandlerId[2];
+
+        #     if (pathPoint.ControlPointIndex == 0 )
         #     {
-        #         controlPointHandler.ControlPointIndex = 2
-        #         if (controlPoint.QuartetIndex == 0)
+        #         relatedControlPoints[0] = new ControlPointHandlerId { ControlPointIndex = 1, QuartetIndex = pathPoint.QuartetIndex };
+
+        #         if (pathPoint.QuartetIndex == 0)
         #         {
-        #             controlPointHandler.QuartetIndex = GetLastQuartetIndex()
-        #         }
-        #         if (controlPoint.QuartetIndex > 0)
-        #         {
-        #             controlPointHandler.QuartetIndex = controlPoint.QuartetIndex - 1
-        #         }
-        #     }
-        #     else if (controlPoint.ControlPointIndex == 2)
-        #     {
-        #         controlPointHandler.ControlPointIndex = 1
-        #         if (controlPoint.QuartetIndex < GetLastQuartetIndex())
-        #         {
-        #             controlPointHandler.QuartetIndex = controlPoint.QuartetIndex + 1
+        #             relatedControlPoints[1] = new ControlPointHandlerId { ControlPointIndex = 2, QuartetIndex = GetLastQuartetIndex() };
         #         }
         #         else
         #         {
-        #             controlPointHandler.QuartetIndex = 0
+        #             relatedControlPoints[1] = new ControlPointHandlerId { ControlPointIndex = 2, QuartetIndex = pathPoint.QuartetIndex - 1 };
         #         }
         #     }
+        #     else if (pathPoint.ControlPointIndex == 3)
+        #     {
+        #         relatedControlPoints[0] = new ControlPointHandlerId { ControlPointIndex = 2, QuartetIndex = pathPoint.QuartetIndex };
 
-        #     return controlPointHandler
+        #         if (pathPoint.QuartetIndex == 0 && controlPointQuartetCollection.NumberOfQuartets > 1)
+        #         {
+        #             relatedControlPoints[1] = new ControlPointHandlerId { ControlPointIndex = 1, QuartetIndex = pathPoint.QuartetIndex + 1 };
+        #         }
+        #         else
+        #         {
+        #             if (pathPoint.QuartetIndex == controlPointQuartetCollection.NumberOfQuartets - 1)
+        #             {
+        #                 relatedControlPoints[1] = new ControlPointHandlerId { ControlPointIndex = 1, QuartetIndex = 0 };
+        #             }
+        #             else
+        #             {
+        #                 relatedControlPoints[1] = new ControlPointHandlerId { ControlPointIndex = 1, QuartetIndex = pathPoint.QuartetIndex + 1 };
+        #             }
+        #         }
+        #     }
+            
+        #     return relatedControlPoints;
         # }
+
+
