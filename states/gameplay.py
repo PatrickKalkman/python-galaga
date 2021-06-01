@@ -23,7 +23,7 @@ class Gameplay(BaseState):
         self.player = Player()
         self.all_sprites = pygame.sprite.Group()
         self.all_sprites.add(self.player)
-        enemy = Enemy()
+        enemy = Enemy(self.control_points)
         self.all_sprites.add(enemy)
         self.shoot_sound = pygame.mixer.Sound(
             "./assets/sounds/13 Fighter Shot1.mp3")
@@ -68,7 +68,7 @@ class Gameplay(BaseState):
             entity.update(pressed_keys, self.control_points)
             x = self.control_points[entity.cp_index].get(entity.p_index).x
             y = self.control_points[entity.cp_index].get(entity.p_index).y
-            print(f'{x}, {y}')
+            #print(f'{x}, {y}')
 
         for entity in self.all_sprites:
             screen.blit(entity.get_surf(), entity.rect)
@@ -78,8 +78,6 @@ class Gameplay(BaseState):
 
         self.drawPath(screen)
         self.draw_control_lines(screen)
-
-
 
     def drawPath(self, screen):
         calculator = BezierPathPointCalculator()

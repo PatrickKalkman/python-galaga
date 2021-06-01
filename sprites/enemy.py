@@ -10,7 +10,7 @@ from bezier.bezier_path_point_calculator import \
 
 
 class Enemy(pygame.sprite.Sprite):
-    def __init__(self):
+    def __init__(self, control_points):
         super(Enemy, self).__init__()
         sprites = spritesheet.SpriteSheet(constants.SPRITE_SHEET)
         self.timer = 0
@@ -27,7 +27,7 @@ class Enemy(pygame.sprite.Sprite):
             center=(constants.SCREEN_WIDTH / 2,
                     constants.SCREEN_HEIGHT - 20))
         self.image_index = 0
-        self.control_points = BezierControlPointCollectionFactory.create_demo_collection()
+        self.control_points = control_points
         self.calculator = BezierPathPointCalculator()
 
     def get_event(self, event):

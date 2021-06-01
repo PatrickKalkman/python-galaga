@@ -16,8 +16,8 @@ class BezierControlPointCollectionFactory():
 
         bezier_point_quartet_collection.append(BezierControlPointQuartet(
             240, 364,
-            259, 904,
-            299, 904,
+            259, 504,
+            299, 504,
             189, 119,
         ))
 
