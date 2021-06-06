@@ -5,11 +5,10 @@ from sprites.rocket import Rocket
 from sprites.enemy import Enemy
 from sprites.control_point import ControlPoint
 
-
-from bezier.bezier_control_point_collection_factory import \
-    BezierControlPointCollectionFactory
-from bezier.bezier_path_point_calculator import \
-    BezierPathPointCalculator
+from bezier.control_point_collection_factory import ControlPointCollectionFactory
+from bezier.path_point_calculator import PathPointCalculator
+from bezier.control_handler_mover import ControlHandlerMover
+from bezier.path_point_selector import PathPointSelector
 
 
 class Gameplay(BaseState):
@@ -17,7 +16,10 @@ class Gameplay(BaseState):
         super(Gameplay, self).__init__()
         self.rect = pygame.Rect((0, 0), (80, 80))
         self.next_state = "GAME_OVER"
-        self.control_points = BezierControlPointCollectionFactory.create_demo_collection()
+        self.control_points = ControlPointCollectionFactory.create_demo_collection()
+        path_point_selector = PathPointSelector(self.control_points)
+        path_point_selector.create_path_point_mapping()
+        self.mover = ControlHandlerMover(self.control_points, path_point_selector)
         self.control_sprites = pygame.sprite.Group()
         self.add_control_points()
         self.player = Player()
@@ -29,13 +31,18 @@ class Gameplay(BaseState):
             "./assets/sounds/13 Fighter Shot1.mp3")
         pygame.mixer.music.load('./assets/sounds/02 Start Music.mp3')
         pygame.mixer.music.play()
+        self.mover.align_all()
 
     def add_control_points(self):
-        for quartet_index in range(len(self.control_points)):
+        for quartet_index in range(self.control_points.number_of_quartets()):
             for point_index in range(3):
-                x = self.control_points[quartet_index].get(point_index).x
-                y = self.control_points[quartet_index].get(point_index).y
-                self.control_sprites.add(ControlPoint(x, y, (255, 120, 120), quartet_index, point_index))
+                quartet = self.control_points.get_quartet(quartet_index)
+                point = quartet.get_point(point_index)
+                x = point.x
+                y = point.y
+                self.control_sprites.add(ControlPoint(
+                    x, y, (255, 120, 120), quartet_index, point_index,
+                    self.control_points, self.mover))
 
     def get_event(self, event):
         for entity in self.all_sprites:
@@ -65,10 +72,7 @@ class Gameplay(BaseState):
             entity.update(pressed_keys)
 
         for entity in self.control_sprites:
-            entity.update(pressed_keys, self.control_points)
-            x = self.control_points[entity.cp_index].get(entity.p_index).x
-            y = self.control_points[entity.cp_index].get(entity.p_index).y
-            #print(f'{x}, {y}')
+            entity.update(pressed_keys)
 
         for entity in self.all_sprites:
             screen.blit(entity.get_surf(), entity.rect)
@@ -80,13 +84,14 @@ class Gameplay(BaseState):
         self.draw_control_lines(screen)
 
     def drawPath(self, screen):
-        calculator = BezierPathPointCalculator()
+        calculator = PathPointCalculator()
         bezier_timer = 0
         previous_path_point = None
-        while bezier_timer < len(self.control_points):
+        while bezier_timer < self.control_points.number_of_quartets():
             control_point_index = int(bezier_timer)
-            path_point = calculator.calculate_path_point(self.control_points[control_point_index],
-                                                         bezier_timer)
+            path_point = calculator.calculate_path_point(
+                self.control_points.get_quartet(control_point_index),
+                bezier_timer)
             if previous_path_point is None:
                 previous_path_point = path_point
 
@@ -100,17 +105,17 @@ class Gameplay(BaseState):
         lines = []
 
         lines.append(
-            ((self.control_points[0].get(1).x,
-              self.control_points[0].get(1).y),
-             (self.control_points[-1].get(2).x,
-              self.control_points[-1].get(2).x)))
+            ((self.control_points.get_quartet(0).get_point(1).x,
+              self.control_points.get_quartet(0).get_point(1).y),
+             (self.control_points.get_quartet(-1).get_point(2).x,
+              self.control_points.get_quartet(-1).get_point(2).x)))
 
-        for index in range(0, len(self.control_points), 2):
+        for index in range(0, self.control_points.number_of_quartets(), 2):
             lines.append(
-                ((self.control_points[index].get(2).x,
-                  self.control_points[index].get(2).y),
-                 (self.control_points[index+1].get(1).x,
-                  self.control_points[index+1].get(1).y)))
+                ((self.control_points.get_quartet(index).get_point(2).x,
+                  self.control_points.get_quartet(index).get_point(2).y),
+                 (self.control_points.get_quartet(index+1).get_point(1).x,
+                  self.control_points.get_quartet(index+1).get_point(1).y)))
 
         for line in lines:
             pygame.draw.line(screen, (255, 255, 255), (line[0]), (line[1]))
