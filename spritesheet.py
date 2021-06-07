@@ -18,7 +18,8 @@ class SpriteSheet:
     def __init__(self, filename):
         """Load the sheet."""
         try:
-            self.sheet = pygame.image.load(filename).convert()
+            self.sheet = pygame.image.load(filename).convert_alpha()
+            self.sheet.set_colorkey(-1, pygame.RLEACCEL)
         except pygame.error as e:
             print(f"Unable to load spritesheet image: {filename}")
             raise SystemExit(e)
@@ -41,6 +42,6 @@ class SpriteSheet:
 
     def load_strip(self, rect, image_count, colorkey=None):
         """Load a whole strip of images, and return them as a list."""
-        tups = [(rect[0]+rect[2]*x, rect[1], rect[2], rect[3])
+        tups = [(rect[0] + rect[2] * x, rect[1], rect[2], rect[3])
                 for x in range(image_count)]
         return self.images_at(tups, colorkey)

@@ -42,7 +42,7 @@ class PathPointSelector():
             return self.path_point_mapping[key]
 
     def find_related_control_point(self, control_point_handler: ControlPointHandler):
-        related_control_point = ControlPointHandler(0, 0)
+        related_control_point = ControlPointHandler(-1, -1)
         last_quartet_index = self.control_point_quartet_collection.number_of_quartets() - 1
 
         if control_point_handler.control_point_index == 1:
@@ -114,7 +114,7 @@ class PathPointSelector():
         line_list.append(((control_point1.x, control_point1.y), (control_point2.x, control_point2.y)))
 
         if self.get_number_of_quartets() > 1:
-            for index in range(self.control_point_quartet_collection.number_of_quartets() - 1):
+            for index in range(last_quartet_index):
                 control_point1 = self.control_point_quartet_collection.get_control_point(ControlPointHandler(index, 2))
                 control_point2 = self.control_point_quartet_collection.get_control_point(ControlPointHandler(index + 1, 1))
                 line_list.append(((control_point1.x, control_point1.y), (control_point2.x, control_point2.y)))

@@ -3,13 +3,13 @@ import pygame
 
 
 class ControlPoint(pygame.sprite.Sprite):
-    def __init__(self, x, y, color, cp_index,
+    def __init__(self, x, y, color, q_index,
                  p_index, control_points,
                  control_handler_mover: ControlPointHandler):
         super(ControlPoint, self).__init__()
 
         self.control_points = control_points
-        self.cp_index = cp_index
+        self.q_index = q_index
         self.p_index = p_index
         self.control_handler_mover = control_handler_mover
         self.original_image = pygame.Surface((50, 50), pygame.SRCALPHA)
@@ -32,16 +32,17 @@ class ControlPoint(pygame.sprite.Sprite):
         self.image = self.selected_image if self.selected else self.original_image
 
         if self.selected:
+            print(f'selected {self.q_index},{self.p_index}')
             self.rect = self.image.get_rect(
                 center=(mouse_pos[0], mouse_pos[1]))
             self.control_handler_mover.move_control_handler(
-                ControlPointHandler(self.cp_index, self.p_index),
+                ControlPointHandler(self.q_index, self.p_index),
                 mouse_pos[0], mouse_pos[1])
         else:
             self.x = self.control_points.get_quartet(
-                self.cp_index).get_point(self.p_index).x
+                self.q_index).get_point(self.p_index).x
             self.y = self.control_points.get_quartet(
-                self.cp_index).get_point(self.p_index).y
+                self.q_index).get_point(self.p_index).y
             self.rect = self.image.get_rect(center=(self.x, self.y))
 
     def get_surf(self):

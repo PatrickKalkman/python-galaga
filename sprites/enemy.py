@@ -20,7 +20,7 @@ class Enemy(pygame.sprite.Sprite):
         self.speed = 1
         self.sprite_index_count = 1
         self.images = sprites.load_strip(
-            [0, 199, 48, 40], self.number_of_images)
+            [0, 199, 48, 40], self.number_of_images, -1)
 
         self.surf = self.images[0]
         self.rect = self.surf.get_rect(center=(constants.SCREEN_WIDTH / 2, constants.SCREEN_HEIGHT - 20))
@@ -45,8 +45,7 @@ class Enemy(pygame.sprite.Sprite):
         self.rect.centery = path_point.ypos
 
         self.timer += 1
-        self.rotation_calc += 1
-        self.bezier_timer += 0.006
+        self.bezier_timer += 0.012
         
         if int(self.bezier_timer) > self.control_points.number_of_quartets() - 1:
             self.kill()

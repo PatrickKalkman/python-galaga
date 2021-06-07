@@ -1,10 +1,11 @@
 import pygame
-import math
+
 from .base import BaseState
 from sprites.player import Player
 from sprites.rocket import Rocket
 from sprites.enemy import Enemy
 from sprites.control_point import ControlPoint
+from sprites.explosion import Explosion
 
 from bezier.control_point_collection_factory import ControlPointCollectionFactory
 from bezier.path_point_calculator import PathPointCalculator
@@ -30,17 +31,13 @@ class Gameplay(BaseState):
         self.all_sprites.add(self.player)
 
         self.all_enemies = pygame.sprite.Group()
-        self.enemy = Enemy(self.control_points)
-        self.all_enemies.add(self.enemy)
-        self.all_sprites.add(self.enemy)
-        self.rocket = Rocket()
         self.all_rockets = pygame.sprite.Group()
-        self.shoot_sound = pygame.mixer.Sound(
-            "./assets/sounds/13 Fighter Shot1.mp3")
-        pygame.mixer.music.load('./assets/sounds/02 Start Music.mp3')
-        pygame.mixer.music.play()
+        self.shoot_sound = pygame.mixer.Sound("./assets/sounds/13 Fighter Shot1.mp3")
+        self.kill_sound = pygame.mixer.Sound("./assets/sounds/kill.mp3")
         self.show_control = False
         self.mover.align_all()
+        pygame.mixer.music.load('./assets/sounds/02 Start Music.mp3')
+        pygame.mixer.music.play()
 
     def add_control_points(self):
         for quartet_index in range(self.control_points.number_of_quartets()):
@@ -101,7 +98,11 @@ class Gameplay(BaseState):
             self.drawPath(screen)
             self.draw_control_lines(screen)
 
-        pygame.sprite.groupcollide(self.all_rockets, self.all_enemies, True, True)
+        result = pygame.sprite.groupcollide(self.all_rockets, self.all_enemies, True, True)
+        if result:
+            for key in result:
+                self.all_sprites.add(Explosion(key.rect[0], key.rect[1]))
+                self.kill_sound.play()
 
     def drawPath(self, screen):
         calculator = PathPointCalculator()

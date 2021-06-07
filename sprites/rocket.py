@@ -11,9 +11,9 @@ class Rocket(pygame.sprite.Sprite):
         self.timer = 0
         self.interval = 2
         self.number_of_images = 3
-        self.speed = 10
+        self.speed = 15
         self.images = sprites.load_strip(
-            [0, 177, 12, 14], self.number_of_images)
+            [0, 177, 12, 14], self.number_of_images, -1)
 
         self.surf = self.images[1]
         self.rect = self.surf.get_rect(
