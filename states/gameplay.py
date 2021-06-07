@@ -33,6 +33,8 @@ class Gameplay(BaseState):
         self.enemy = Enemy(self.control_points)
         self.all_enemies.add(self.enemy)
         self.all_sprites.add(self.enemy)
+        self.rocket = Rocket()
+        self.all_rockets = pygame.sprite.Group()
         self.shoot_sound = pygame.mixer.Sound(
             "./assets/sounds/13 Fighter Shot1.mp3")
         pygame.mixer.music.load('./assets/sounds/02 Start Music.mp3')
@@ -98,6 +100,8 @@ class Gameplay(BaseState):
 
             self.drawPath(screen)
             self.draw_control_lines(screen)
+
+        pygame.sprite.groupcollide(self.all_rockets, self.all_enemies, True, True)
 
     def drawPath(self, screen):
         calculator = PathPointCalculator()
