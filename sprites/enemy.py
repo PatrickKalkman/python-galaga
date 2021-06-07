@@ -44,9 +44,8 @@ class Enemy(pygame.sprite.Sprite):
         if self.previous_point is None:
             self.previous_point = path_point
 
-        if self.rotation_calc % 10 == 0:
-            self.rotation = self.calculate_rotation(self.previous_point, path_point)
-            self.previous_point = path_point
+        self.rotation = self.calculate_rotation(self.previous_point, path_point)
+        self.previous_point = path_point
         self.rect.centerx = path_point.xpos
         self.rect.centery = path_point.ypos
 
@@ -57,7 +56,7 @@ class Enemy(pygame.sprite.Sprite):
         dx = current_point.xpos - previous_point.xpos
         dy = current_point.ypos - previous_point.ypos
 
-        return math.atan2(dy, dx) + 180.0
+        return math.degrees(math.atan2(dx, dy)) + 180
 
     def get_surf(self):
         if self.timer % self.interval == 0:
