@@ -48,9 +48,8 @@ class ControlHandlerMover():
 
     def align_all(self):
         for quartet_index in range(self.control_point_quartet_collection.number_of_quartets()):
+            quartet = self.control_point_quartet_collection.get_quartet(quartet_index)
             for point_index in range(4):
-                control_point_handler = ControlPointHandler(
-                    quartet_index, point_index)
-                quartet = self.control_point_quartet_collection.get_quartet(quartet_index)
+                control_point_handler = ControlPointHandler(quartet_index, point_index)
                 point = quartet.get_point(point_index)
                 self.move_control_handler(control_point_handler, point.x, point.y)

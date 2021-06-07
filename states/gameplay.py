@@ -17,9 +17,9 @@ class Gameplay(BaseState):
         self.rect = pygame.Rect((0, 0), (80, 80))
         self.next_state = "GAME_OVER"
         self.control_points = ControlPointCollectionFactory.create_demo_collection()
-        path_point_selector = PathPointSelector(self.control_points)
-        path_point_selector.create_path_point_mapping()
-        self.mover = ControlHandlerMover(self.control_points, path_point_selector)
+        self.path_point_selector = PathPointSelector(self.control_points)
+        self.path_point_selector.create_path_point_mapping()
+        self.mover = ControlHandlerMover(self.control_points, self.path_point_selector)
         self.control_sprites = pygame.sprite.Group()
         self.add_control_points()
         self.player = Player()
@@ -102,20 +102,5 @@ class Gameplay(BaseState):
             bezier_timer += 0.005
 
     def draw_control_lines(self, screen):
-        lines = []
-
-        lines.append(
-            ((self.control_points.get_quartet(0).get_point(1).x,
-              self.control_points.get_quartet(0).get_point(1).y),
-             (self.control_points.get_quartet(-1).get_point(2).x,
-              self.control_points.get_quartet(-1).get_point(2).x)))
-
-        for index in range(0, self.control_points.number_of_quartets(), 2):
-            lines.append(
-                ((self.control_points.get_quartet(index).get_point(2).x,
-                  self.control_points.get_quartet(index).get_point(2).y),
-                 (self.control_points.get_quartet(index+1).get_point(1).x,
-                  self.control_points.get_quartet(index+1).get_point(1).y)))
-
-        for line in lines:
-            pygame.draw.line(screen, (255, 255, 255), (line[0]), (line[1]))
+        for pair in self.path_point_selector.get_control_point_pairs():
+            pygame.draw.line(screen, (255, 255, 255), pair[0], pair[1])
