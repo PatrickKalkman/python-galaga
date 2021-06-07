@@ -9,17 +9,15 @@ class ControlPointCollectionFactory():
         control_point_quartet_collection = ControlPointQuartetCollection()
 
         control_point_quartet_collection.add(ControlPointQuartet(
-            189, 119,
-            56, 17,
-            203, 254,
-            240, 364
-        ))
+            768, 121,
+            494, 125,
+            1193, 858,
+            771, 853))
 
         control_point_quartet_collection.add(ControlPointQuartet(
-            240, 364,
-            259, 504,
-            299, 504,
-            189, 119,
-        ))
+            771, 853,
+            349, 848,
+            1042, 117,
+            768, 121))
 
         return control_point_quartet_collection

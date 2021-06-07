@@ -53,6 +53,7 @@ class Gameplay(BaseState):
             self.quit = True
         elif event.type == pygame.KEYUP:
             if event.key == pygame.K_ESCAPE:
+                self.control_points.save_control_points()
                 self.done = True
             if event.key == pygame.K_SPACE:
                 # check if the sprite group already contains two rockets
