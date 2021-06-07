@@ -1,11 +1,11 @@
 
     control_point_quartet_collection.add(ControlPointQuartet(
-        768,121,
-        494,125,
-        1193,858,
-        771,853,))
+        785, -40,
+        517, -40,
+        1249, 897,
+        801, 903))
     control_point_quartet_collection.add(ControlPointQuartet(
-        771,853,
-        349,848,
-        1042,117,
-        768,121,))
+        801, 903,
+        353, 909,
+        1053, -40,
+        785, -40))

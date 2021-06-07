@@ -34,11 +34,6 @@ class Enemy(pygame.sprite.Sprite):
         pass
 
     def update(self, keys):
-        self.timer += 1
-        self.rotation_calc += 1
-        self.bezier_timer += 0.006
-        if int(self.bezier_timer) > self.control_points.number_of_quartets() - 1:
-            self.bezier_timer = 0
         control_point_index = int(self.bezier_timer)
         path_point = self.calculator.calculate_path_point(self.control_points.get_quartet(control_point_index), self.bezier_timer)
         if self.previous_point is None:
@@ -49,7 +44,11 @@ class Enemy(pygame.sprite.Sprite):
         self.rect.centerx = path_point.xpos
         self.rect.centery = path_point.ypos
 
-        if self.rect.bottom < 0:
+        self.timer += 1
+        self.rotation_calc += 1
+        self.bezier_timer += 0.006
+        
+        if int(self.bezier_timer) > self.control_points.number_of_quartets() - 1:
             self.kill()
 
     def calculate_rotation(self, previous_point, current_point):

@@ -33,10 +33,12 @@ class ControlPointQuartetCollection():
         return self.control_point_quartets[quartet_index].points[control_point_index]
 
     def save_control_points(self):
-        print('saving')
         with open('control_points.txt', 'w') as file:
             for quartet in self.control_point_quartets:
                 file.write('\n    control_point_quartet_collection.add(ControlPointQuartet(')
-                for point in quartet.points:
-                    file.write(f'\n        {point.x},{point.y},')
+                for index, point in enumerate(quartet.points):
+                    if index == 3:
+                        file.write(f'\n        {point.x}, {point.y}')
+                    else:
+                        file.write(f'\n        {point.x}, {point.y},')
                 file.write('))')
