@@ -95,11 +95,8 @@ class PathPointSelector():
         elif control_point_handler.control_point_index == 3:
 
             related_control_points.append(ControlPointHandler(control_point_handler.quartet_index, 2))
-
             if control_point_handler.quartet_index == 0 and number_of_quartets > 1:
-
                 related_control_points.append(ControlPointHandler(control_point_handler.quartet_index + 1, 1))
-
             else:
                 if control_point_handler.quartet_index == last_quartet_index:
                     related_control_points.append(ControlPointHandler(0, 1))

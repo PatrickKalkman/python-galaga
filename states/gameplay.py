@@ -1,4 +1,5 @@
 import pygame
+import math
 from .base import BaseState
 from sprites.player import Player
 from sprites.rocket import Rocket
@@ -25,8 +26,8 @@ class Gameplay(BaseState):
         self.player = Player()
         self.all_sprites = pygame.sprite.Group()
         self.all_sprites.add(self.player)
-        enemy = Enemy(self.control_points)
-        self.all_sprites.add(enemy)
+        self.enemy = Enemy(self.control_points)
+        self.all_sprites.add(self.enemy)
         self.shoot_sound = pygame.mixer.Sound(
             "./assets/sounds/13 Fighter Shot1.mp3")
         pygame.mixer.music.load('./assets/sounds/02 Start Music.mp3')
@@ -89,15 +90,11 @@ class Gameplay(BaseState):
         previous_path_point = None
         while bezier_timer < self.control_points.number_of_quartets():
             control_point_index = int(bezier_timer)
-            path_point = calculator.calculate_path_point(
-                self.control_points.get_quartet(control_point_index),
-                bezier_timer)
+            path_point = calculator.calculate_path_point(self.control_points.get_quartet(control_point_index), bezier_timer)
             if previous_path_point is None:
                 previous_path_point = path_point
 
-            pygame.draw.line(screen, (255, 255, 255),
-                             (previous_path_point.xpos, previous_path_point.ypos),
-                             (path_point.xpos, path_point.ypos))
+            pygame.draw.line(screen, (255, 255, 255), (previous_path_point.xpos, previous_path_point.ypos), (path_point.xpos, path_point.ypos))
             previous_path_point = path_point
             bezier_timer += 0.005
 
