@@ -8,7 +8,8 @@ from states.splash import Splash
 from game import Game
 import constants
 
-pygame.mixer.pre_init(44100, -16, 2, 2048) # setup mixer to avoid sound lag
+# setup mixer to avoid sound lag
+pygame.mixer.pre_init(44100, -16, 2, 2048)
 pygame.init()
 pygame.mixer.init()
 screen = pygame.display.set_mode((constants.SCREEN_WIDTH,
@@ -20,7 +21,7 @@ states = {
     "GAME_OVER": GameOver(),
 }
 
-game = Game(screen, states, "GAMEPLAY")
+game = Game(screen, states, "SPLASH")
 game.run()
 
 pygame.quit()

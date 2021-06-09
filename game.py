@@ -17,7 +17,6 @@ class Game(object):
             self.state.get_event(event)
 
     def flip_state(self):
-        current_state = self.state_name
         next_state = self.state.next_state
         self.state.done = False
         self.state_name = next_state

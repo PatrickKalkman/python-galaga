@@ -17,7 +17,7 @@ ADDENEMY = pygame.USEREVENT + 1
 class Gameplay(BaseState):
     def __init__(self):
         super(Gameplay, self).__init__()
-        pygame.time.set_timer(ADDENEMY, 400)
+        pygame.time.set_timer(ADDENEMY, 450)
 
         self.rect = pygame.Rect((0, 0), (80, 80))
         self.next_state = "GAME_OVER"
@@ -33,7 +33,7 @@ class Gameplay(BaseState):
         self.all_sprites.add(self.player)
         self.wave_count = 0
         self.enemies = 0
-        self.number_of_enemies = 15
+        self.number_of_enemies = 13
 
         self.all_enemies = pygame.sprite.Group()
         self.all_rockets = pygame.sprite.Group()
@@ -41,6 +41,8 @@ class Gameplay(BaseState):
         self.kill_sound = pygame.mixer.Sound("./assets/sounds/kill.mp3")
         self.show_control = False
         self.mover.align_all()
+
+    def startup(self, persistent):
         pygame.mixer.music.load('./assets/sounds/02 Start Music.mp3')
         pygame.mixer.music.play()
 
@@ -49,10 +51,8 @@ class Gameplay(BaseState):
             for point_index in range(4):
                 quartet = self.control_points1.get_quartet(quartet_index)
                 point = quartet.get_point(point_index)
-                x = point.x
-                y = point.y
                 self.control_sprites.add(ControlPoint(
-                    x, y, (255, 120, 120), quartet_index, point_index,
+                    point.x, point.y, (255, 120, 120), quartet_index, point_index,
                     self.control_points1, self.mover))
 
     def get_event(self, event):
@@ -62,18 +62,13 @@ class Gameplay(BaseState):
         if event.type == pygame.QUIT:
             self.quit = True
         if event.type == ADDENEMY:
-            print(len(self.all_enemies))
             if self.enemies < self.number_of_enemies:
-                self.enemies += 1
-                enemy1 = Enemy(self.control_points1, self.wave_count)
-                self.all_enemies.add(enemy1)
-                self.all_sprites.add(enemy1)
-                enemy2 = Enemy(self.control_points2, 2 - self.wave_count)
-                self.all_enemies.add(enemy2)
-                self.all_sprites.add(enemy2)
+                self.add_enemy()
             elif len(self.all_enemies) == 0:
                 self.enemies = 0
                 self.wave_count += 1
+                if self.wave_count > 2:
+                    self.wave_count = 0
 
         elif event.type == pygame.KEYUP:
             if event.key == pygame.K_ESCAPE:
@@ -82,18 +77,29 @@ class Gameplay(BaseState):
             if event.key == pygame.K_s:
                 self.show_control = not self.show_control
             if event.key == pygame.K_SPACE:
-                # check if the sprite group already contains two rockets
                 rocket_count = 0
                 for sprite in self.all_sprites.sprites():
                     if (isinstance(sprite, Rocket)):
                         rocket_count += 1
 
                 if rocket_count < 2:
-                    self.rocket = Rocket()
-                    self.rocket.rect.centerx = self.player.rect.centerx
-                    self.all_rockets.add(self.rocket)
-                    self.all_sprites.add(self.rocket)
-                    self.shoot_sound.play()
+                    self.shoot_rocket()
+
+    def add_enemy(self):
+        self.enemies += 1
+        enemy1 = Enemy(self.control_points1, self.wave_count)
+        self.all_enemies.add(enemy1)
+        self.all_sprites.add(enemy1)
+        enemy2 = Enemy(self.control_points2, self.wave_count)
+        self.all_enemies.add(enemy2)
+        self.all_sprites.add(enemy2)
+
+    def shoot_rocket(self):
+        self.rocket = Rocket()
+        self.rocket.rect.centerx = self.player.rect.centerx
+        self.all_rockets.add(self.rocket)
+        self.all_sprites.add(self.rocket)
+        self.shoot_sound.play()
 
     def draw(self, screen):
         pressed_keys = pygame.key.get_pressed()
@@ -125,11 +131,13 @@ class Gameplay(BaseState):
         previous_path_point = None
         while bezier_timer < self.control_points1.number_of_quartets():
             control_point_index = int(bezier_timer)
-            path_point = calculator.calculate_path_point(self.control_points1.get_quartet(control_point_index), bezier_timer)
+            path_point = calculator.calculate_path_point(
+                self.control_points1.get_quartet(control_point_index), bezier_timer)
             if previous_path_point is None:
                 previous_path_point = path_point
 
-            pygame.draw.line(screen, (255, 255, 255), (previous_path_point.xpos, previous_path_point.ypos), (path_point.xpos, path_point.ypos))
+            pygame.draw.line(screen, (255, 255, 255), (previous_path_point.xpos,
+                             previous_path_point.ypos), (path_point.xpos, path_point.ypos))
             previous_path_point = path_point
             bezier_timer += 0.005
 
