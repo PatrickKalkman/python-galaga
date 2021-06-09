@@ -9,18 +9,25 @@ from bezier.path_point_calculator import \
 
 
 class Enemy(pygame.sprite.Sprite):
-    def __init__(self, control_points):
+    def __init__(self, control_points, enemy):
         super(Enemy, self).__init__()
         sprites = spritesheet.SpriteSheet(constants.SPRITE_SHEET)
         self.rotation = 0
         self.timer = 0
         self.bezier_timer = 0.0
         self.interval = 2
-        self.number_of_images = 7
         self.speed = 1
         self.sprite_index_count = 1
-        self.images = sprites.load_strip(
-            [0, 199, 48, 40], self.number_of_images, -1)
+
+        if enemy == 0:
+            self.number_of_images = 7
+            self.images = sprites.load_strip([0, 199, 48, 40], self.number_of_images, -1)
+        elif enemy == 1:
+            self.number_of_images = 4
+            self.images = sprites.load_strip([0, 248, 48, 40], self.number_of_images, -1)
+        elif enemy == 2:
+            self.number_of_images = 4
+            self.images = sprites.load_strip([0, 62, 64, 66], self.number_of_images, -1)
 
         self.surf = self.images[0]
         self.rect = self.surf.get_rect(center=(constants.SCREEN_WIDTH / 2, constants.SCREEN_HEIGHT - 20))
@@ -35,7 +42,8 @@ class Enemy(pygame.sprite.Sprite):
 
     def update(self, keys):
         control_point_index = int(self.bezier_timer)
-        path_point = self.calculator.calculate_path_point(self.control_points.get_quartet(control_point_index), self.bezier_timer)
+        path_point = self.calculator.calculate_path_point(
+            self.control_points.get_quartet(control_point_index), self.bezier_timer)
         if self.previous_point is None:
             self.previous_point = path_point
 
@@ -46,7 +54,7 @@ class Enemy(pygame.sprite.Sprite):
 
         self.timer += 1
         self.bezier_timer += 0.012
-        
+
         if int(self.bezier_timer) > self.control_points.number_of_quartets() - 1:
             self.kill()
 

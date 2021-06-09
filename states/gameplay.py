@@ -11,24 +11,29 @@ from bezier.control_point_collection_factory import ControlPointCollectionFactor
 from bezier.path_point_calculator import PathPointCalculator
 from bezier.control_handler_mover import ControlHandlerMover
 from bezier.path_point_selector import PathPointSelector
-
 ADDENEMY = pygame.USEREVENT + 1
 
 
 class Gameplay(BaseState):
     def __init__(self):
         super(Gameplay, self).__init__()
+        pygame.time.set_timer(ADDENEMY, 400)
+
         self.rect = pygame.Rect((0, 0), (80, 80))
         self.next_state = "GAME_OVER"
-        self.control_points = ControlPointCollectionFactory.create_demo_collection()
-        self.path_point_selector = PathPointSelector(self.control_points)
+        self.control_points1 = ControlPointCollectionFactory.create_collection1()
+        self.control_points2 = ControlPointCollectionFactory.create_collection2()
+        self.path_point_selector = PathPointSelector(self.control_points1)
         self.path_point_selector.create_path_point_mapping()
-        self.mover = ControlHandlerMover(self.control_points, self.path_point_selector)
+        self.mover = ControlHandlerMover(self.control_points1, self.path_point_selector)
         self.control_sprites = pygame.sprite.Group()
         self.add_control_points()
         self.player = Player()
         self.all_sprites = pygame.sprite.Group()
         self.all_sprites.add(self.player)
+        self.wave_count = 0
+        self.enemies = 0
+        self.number_of_enemies = 15
 
         self.all_enemies = pygame.sprite.Group()
         self.all_rockets = pygame.sprite.Group()
@@ -40,15 +45,15 @@ class Gameplay(BaseState):
         pygame.mixer.music.play()
 
     def add_control_points(self):
-        for quartet_index in range(self.control_points.number_of_quartets()):
-            for point_index in range(3):
-                quartet = self.control_points.get_quartet(quartet_index)
+        for quartet_index in range(self.control_points1.number_of_quartets()):
+            for point_index in range(4):
+                quartet = self.control_points1.get_quartet(quartet_index)
                 point = quartet.get_point(point_index)
                 x = point.x
                 y = point.y
                 self.control_sprites.add(ControlPoint(
                     x, y, (255, 120, 120), quartet_index, point_index,
-                    self.control_points, self.mover))
+                    self.control_points1, self.mover))
 
     def get_event(self, event):
         for entity in self.all_sprites:
@@ -57,12 +62,22 @@ class Gameplay(BaseState):
         if event.type == pygame.QUIT:
             self.quit = True
         if event.type == ADDENEMY:
-            enemy = Enemy(self.control_points)
-            self.all_enemies.add(enemy)
-            self.all_sprites.add(enemy)
+            print(len(self.all_enemies))
+            if self.enemies < self.number_of_enemies:
+                self.enemies += 1
+                enemy1 = Enemy(self.control_points1, self.wave_count)
+                self.all_enemies.add(enemy1)
+                self.all_sprites.add(enemy1)
+                enemy2 = Enemy(self.control_points2, 2 - self.wave_count)
+                self.all_enemies.add(enemy2)
+                self.all_sprites.add(enemy2)
+            elif len(self.all_enemies) == 0:
+                self.enemies = 0
+                self.wave_count += 1
+
         elif event.type == pygame.KEYUP:
             if event.key == pygame.K_ESCAPE:
-                self.control_points.save_control_points()
+                self.control_points1.save_control_points()
                 self.done = True
             if event.key == pygame.K_s:
                 self.show_control = not self.show_control
@@ -108,9 +123,9 @@ class Gameplay(BaseState):
         calculator = PathPointCalculator()
         bezier_timer = 0
         previous_path_point = None
-        while bezier_timer < self.control_points.number_of_quartets():
+        while bezier_timer < self.control_points1.number_of_quartets():
             control_point_index = int(bezier_timer)
-            path_point = calculator.calculate_path_point(self.control_points.get_quartet(control_point_index), bezier_timer)
+            path_point = calculator.calculate_path_point(self.control_points1.get_quartet(control_point_index), bezier_timer)
             if previous_path_point is None:
                 previous_path_point = path_point
 

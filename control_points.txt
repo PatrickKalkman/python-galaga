@@ -1,16 +1,16 @@
 
     control_point_quartet_collection.add(ControlPointQuartet(
-        589, 29,
-        335, 32,
-        822, 294,
-        583, 292))
+        513, -15,
+        565, 16,
+        863, 656,
+        516, 654))
     control_point_quartet_collection.add(ControlPointQuartet(
-        583, 292,
-        344, 290,
-        823, 299,
-        616, 454))
+        516, 654,
+        169, 652,
+        676, 535,
+        528, 393))
     control_point_quartet_collection.add(ControlPointQuartet(
-        583, 292,
-        343, 285,
-        843, 26,
-        589, 29))
+        528, 393,
+        380, 251,
+        461, -46,
+        513, -15))

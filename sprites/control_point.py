@@ -13,10 +13,10 @@ class ControlPoint(pygame.sprite.Sprite):
         self.p_index = p_index
         self.control_handler_mover = control_handler_mover
         self.original_image = pygame.Surface((50, 50), pygame.SRCALPHA)
-        pygame.draw.circle(self.original_image, color, (25, 25), 20)
+        pygame.draw.circle(self.original_image, color, (25, 25), 10)
         self.selected_image = pygame.Surface((50, 50), pygame.SRCALPHA)
-        pygame.draw.circle(self.selected_image, color, (25, 25), 25)
-        pygame.draw.circle(self.selected_image, (255, 255, 255), (25, 25), 25, 4)
+        pygame.draw.circle(self.selected_image, color, (25, 25), 10)
+        pygame.draw.circle(self.selected_image, (255, 255, 255), (25, 25), 10, 2)
         self.image = self.original_image
         self.rect = self.image.get_rect(center=(x, y))
         self.selected = False
@@ -32,7 +32,6 @@ class ControlPoint(pygame.sprite.Sprite):
         self.image = self.selected_image if self.selected else self.original_image
 
         if self.selected:
-            print(f'selected {self.q_index},{self.p_index}')
             self.rect = self.image.get_rect(
                 center=(mouse_pos[0], mouse_pos[1]))
             self.control_handler_mover.move_control_handler(

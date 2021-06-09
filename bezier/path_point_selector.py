@@ -7,7 +7,7 @@ class PathPointSelector():
         self.path_point_mapping = {}
 
     def create_key(self, quartet_index, control_point_index):
-        return f'{quartet_index}/{control_point_index}'
+        return f'Q{quartet_index}/P{control_point_index}'
 
     def is_path_point(self, control_point_handler: ControlPointHandler):
         if control_point_handler.control_point_index == 0 or control_point_handler.control_point_index == 3:
@@ -26,20 +26,21 @@ class PathPointSelector():
                 mapped_first_quartet_index = index - 1
 
             mapped_last_quartet_index = 0
-            if index == 0 and nr_quartets > 1 and index != nr_quartets - 1:
+            if index < nr_quartets - 1:
                 mapped_last_quartet_index = index + 1
             else:
-                mapped_first_quartet_index = 0
+                mapped_last_quartet_index = 0
 
             self.path_point_mapping[self.create_key(index, 0)] = ControlPointHandler(mapped_first_quartet_index, 3)
-            self.path_point_mapping[self.create_key(index, 1)] = None
-            self.path_point_mapping[self.create_key(index, 2)] = None
             self.path_point_mapping[self.create_key(index, 3)] = ControlPointHandler(mapped_last_quartet_index, 0)
 
     def find_related_path_point(self, control_point_handler: ControlPointHandler):
         if self.is_path_point(control_point_handler):
             key = self.create_key(control_point_handler.quartet_index, control_point_handler.control_point_index)
             return self.path_point_mapping[key]
+        else:
+            print('error')
+            exit(1)
 
     def find_related_control_point(self, control_point_handler: ControlPointHandler):
         related_control_point = ControlPointHandler(-1, -1)
@@ -79,29 +80,30 @@ class PathPointSelector():
 
         return related_control_point
 
-    def find_control_points_of_path_point(self, control_point_handler: ControlPointHandler):
+    def find_control_points_of_path_point(self, path_point_handler: ControlPointHandler):
         related_control_points = []
         number_of_quartets = self.control_point_quartet_collection.number_of_quartets()
         last_quartet_index = number_of_quartets - 1
 
-        if control_point_handler.control_point_index == 0:
-
-            related_control_points.append(ControlPointHandler(control_point_handler.quartet_index, 1))
-            if control_point_handler.quartet_index == 0:
+        if path_point_handler.control_point_index == 0:
+            related_control_points.append(ControlPointHandler(path_point_handler.quartet_index, 1))
+            if path_point_handler.quartet_index == 0:
                 related_control_points.append(ControlPointHandler(last_quartet_index, 2))
             else:
-                related_control_points.append(ControlPointHandler(control_point_handler.quartet_index - 1, 2))
+                related_control_points.append(ControlPointHandler(path_point_handler.quartet_index - 1, 2))
 
-        elif control_point_handler.control_point_index == 3:
-
-            related_control_points.append(ControlPointHandler(control_point_handler.quartet_index, 2))
-            if control_point_handler.quartet_index == 0 and number_of_quartets > 1:
-                related_control_points.append(ControlPointHandler(control_point_handler.quartet_index + 1, 1))
+        elif path_point_handler.control_point_index == 3:
+            related_control_points.append(ControlPointHandler(path_point_handler.quartet_index, 2))
+            if path_point_handler.quartet_index == 0 and number_of_quartets > 1:
+                related_control_points.append(ControlPointHandler(path_point_handler.quartet_index + 1, 1))
             else:
-                if control_point_handler.quartet_index == last_quartet_index:
+                if path_point_handler.quartet_index == last_quartet_index:
                     related_control_points.append(ControlPointHandler(0, 1))
                 else:
-                    related_control_points.append(ControlPointHandler(control_point_handler.quartet_index + 1, 1))
+                    related_control_points.append(ControlPointHandler(path_point_handler.quartet_index + 1, 1))
+        else:
+            print('error')
+            exit(1)
 
         return related_control_points
 

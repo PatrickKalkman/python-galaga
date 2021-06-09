@@ -11,8 +11,6 @@ class Game(object):
         self.states = states
         self.state_name = start_state
         self.state = self.states[self.state_name]
-        ADDENEMY = pygame.USEREVENT + 1
-        pygame.time.set_timer(ADDENEMY, 1050)
 
     def event_loop(self):
         for event in pygame.event.get():
