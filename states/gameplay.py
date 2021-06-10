@@ -1,4 +1,5 @@
 import pygame
+import random
 
 from .base import BaseState
 from sprites.player import Player
@@ -12,17 +13,21 @@ from bezier.path_point_calculator import PathPointCalculator
 from bezier.control_handler_mover import ControlHandlerMover
 from bezier.path_point_selector import PathPointSelector
 ADDENEMY = pygame.USEREVENT + 1
+ENEMYSHOOTS = pygame.USEREVENT + 2
 
 
 class Gameplay(BaseState):
     def __init__(self):
         super(Gameplay, self).__init__()
         pygame.time.set_timer(ADDENEMY, 450)
+        pygame.time.set_timer(ENEMYSHOOTS, 1000)
 
         self.rect = pygame.Rect((0, 0), (80, 80))
         self.next_state = "GAME_OVER"
         self.control_points1 = ControlPointCollectionFactory.create_collection1()
         self.control_points2 = ControlPointCollectionFactory.create_collection2()
+        self.control_points3 = ControlPointCollectionFactory.create_collection3()
+        self.control_points4 = ControlPointCollectionFactory.create_collection4()
         self.path_point_selector = PathPointSelector(self.control_points1)
         self.path_point_selector.create_path_point_mapping()
         self.mover = ControlHandlerMover(self.control_points1, self.path_point_selector)
@@ -37,6 +42,7 @@ class Gameplay(BaseState):
 
         self.all_enemies = pygame.sprite.Group()
         self.all_rockets = pygame.sprite.Group()
+        self.enemy_rockets = pygame.sprite.Group()
         self.shoot_sound = pygame.mixer.Sound("./assets/sounds/13 Fighter Shot1.mp3")
         self.kill_sound = pygame.mixer.Sound("./assets/sounds/kill.mp3")
         self.show_control = False
@@ -45,6 +51,21 @@ class Gameplay(BaseState):
     def startup(self, persistent):
         pygame.mixer.music.load('./assets/sounds/02 Start Music.mp3')
         pygame.mixer.music.play()
+        self.player = Player()
+        self.all_sprites = pygame.sprite.Group()
+        self.all_sprites.add(self.player)
+        self.wave_count = 0
+        self.enemies = 0
+        self.number_of_enemies = 13
+
+        self.all_enemies = pygame.sprite.Group()
+        self.all_rockets = pygame.sprite.Group()
+        self.enemy_rockets = pygame.sprite.Group()
+        self.shoot_sound = pygame.mixer.Sound("./assets/sounds/13 Fighter Shot1.mp3")
+        self.kill_sound = pygame.mixer.Sound("./assets/sounds/kill.mp3")
+        self.show_control = False
+        self.mover.align_all()
+
 
     def add_control_points(self):
         for quartet_index in range(self.control_points1.number_of_quartets()):
@@ -69,6 +90,8 @@ class Gameplay(BaseState):
                 self.wave_count += 1
                 if self.wave_count > 2:
                     self.wave_count = 0
+        if event.type == ENEMYSHOOTS:
+            self.enemy_shoots()
 
         elif event.type == pygame.KEYUP:
             if event.key == pygame.K_ESCAPE:
@@ -77,29 +100,54 @@ class Gameplay(BaseState):
             if event.key == pygame.K_s:
                 self.show_control = not self.show_control
             if event.key == pygame.K_SPACE:
-                rocket_count = 0
-                for sprite in self.all_sprites.sprites():
-                    if (isinstance(sprite, Rocket)):
-                        rocket_count += 1
-
-                if rocket_count < 2:
+                if len(self.all_rockets) < 2:
                     self.shoot_rocket()
 
     def add_enemy(self):
         self.enemies += 1
-        enemy1 = Enemy(self.control_points1, self.wave_count)
+        if self.wave_count == 0:
+            enemy1 = Enemy(self.control_points1, self.wave_count)
+            enemy2 = Enemy(self.control_points2, self.wave_count)
+        else:
+            enemy1 = Enemy(self.control_points3, self.wave_count)
+            enemy2 = Enemy(self.control_points4, self.wave_count)
+
         self.all_enemies.add(enemy1)
         self.all_sprites.add(enemy1)
-        enemy2 = Enemy(self.control_points2, self.wave_count)
         self.all_enemies.add(enemy2)
         self.all_sprites.add(enemy2)
 
     def shoot_rocket(self):
-        self.rocket = Rocket()
-        self.rocket.rect.centerx = self.player.rect.centerx
-        self.all_rockets.add(self.rocket)
-        self.all_sprites.add(self.rocket)
+        rocket = Rocket(0, -15)
+        rocket.rect.centerx = self.player.rect.centerx
+        self.all_rockets.add(rocket)
+        self.all_sprites.add(rocket)
         self.shoot_sound.play()
+
+    def enemy_shoots(self):
+        # pick a random enemy
+        nr_of_enemies = len(self.all_enemies)
+        if nr_of_enemies > 0:
+            enemy_index = random.randint(0, nr_of_enemies - 1)
+            start_rocket = None
+            for index, enemy in enumerate(self.all_enemies):
+                if index == enemy_index:
+                    start_rocket = enemy.rect.center
+
+            if start_rocket[1] < 400:
+                ySpeed = 7
+                dx = self.player.rect.centerx - start_rocket[0]
+                dy = self.player.rect.centery - start_rocket[1]
+
+                number_of_steps = dy / ySpeed
+                xSpeed = dx / number_of_steps
+
+                rocket = Rocket(xSpeed, ySpeed)
+                rocket.rect.centerx = start_rocket[0]
+                rocket.rect.centery = start_rocket[1]
+
+                self.enemy_rockets.add(rocket)
+                self.all_sprites.add(rocket)
 
     def draw(self, screen):
         pressed_keys = pygame.key.get_pressed()
@@ -124,6 +172,12 @@ class Gameplay(BaseState):
             for key in result:
                 self.all_sprites.add(Explosion(key.rect[0], key.rect[1]))
                 self.kill_sound.play()
+
+        result = pygame.sprite.spritecollideany(self.player, self.enemy_rockets)
+        if result:
+            self.all_sprites.add(Explosion(result.rect[0], result.rect[1]))
+            self.kill_sound.play()
+            self.done = True
 
     def drawPath(self, screen):
         calculator = PathPointCalculator()
