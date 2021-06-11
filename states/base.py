@@ -8,7 +8,7 @@ class BaseState(object):
         self.next_state = None
         self.screen_rect = pygame.display.get_surface().get_rect()
         self.persist = {}
-        self.font = pygame.font.Font(None, 24)
+        self.font = pygame.font.Font(None, 32)
 
     def startup(self, persistent):
         self.persist = persistent

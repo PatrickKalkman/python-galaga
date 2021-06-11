@@ -5,18 +5,15 @@ from pygame.locals import (
 )
 
 import constants
-import spritesheet
 
 
 class Player(pygame.sprite.Sprite):
-    def __init__(self):
+    def __init__(self, sprites):
         super(Player, self).__init__()
-        sprites = spritesheet.SpriteSheet(constants.SPRITE_SHEET)
         self.timer = 0
         self.interval = 2
         self.number_of_images = 6
         self.images = sprites.load_strip([0, 130, 48, 45], self.number_of_images, -1)
-
         self.surf = self.images[0]
         self.rect = self.surf.get_rect(center=(constants.SCREEN_WIDTH / 2, constants.SCREEN_HEIGHT - 40))
         self.image_index = 0

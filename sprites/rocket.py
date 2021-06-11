@@ -1,21 +1,17 @@
 import math
 import pygame
-
 import constants
-import spritesheet
 
 
 class Rocket(pygame.sprite.Sprite):
-    def __init__(self, xSpeed, ySpeed):
+    def __init__(self, sprites, xSpeed, ySpeed):
         super(Rocket, self).__init__()
-        sprites = spritesheet.SpriteSheet(constants.SPRITE_SHEET)
         self.timer = 0
         self.interval = 2
         self.number_of_images = 3
         self.ySpeed = ySpeed
         self.xSpeed = xSpeed
-        self.images = sprites.load_strip(
-            [0, 177, 12, 14], self.number_of_images, -1)
+        self.images = sprites.load_strip([0, 177, 12, 14], self.number_of_images, -1)
 
         self.surf = self.images[1]
         self.rect = self.surf.get_rect(
@@ -25,7 +21,6 @@ class Rocket(pygame.sprite.Sprite):
         self.rotation = 0
         if self.ySpeed > 0:
             self.rotation = math.degrees(math.atan2(xSpeed, ySpeed)) + 180
-
 
     def update(self, keys):
         self.timer += 1

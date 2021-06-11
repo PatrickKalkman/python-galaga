@@ -1,12 +1,9 @@
 import pygame
-import constants
-import spritesheet
 
 
 class Explosion(pygame.sprite.Sprite):
-    def __init__(self, x, y):
+    def __init__(self, sprites, x, y):
         super(Explosion, self).__init__()
-        sprites = spritesheet.SpriteSheet(constants.SPRITE_SHEET_EXPLOSION)
         self.timer = 0
         self.interval = 2
         self.number_of_images = 10
