@@ -2,6 +2,7 @@ import pygame
 import random
 import spritesheet
 import constants
+from starfield import StarField
 
 from .base import BaseState
 from sprites.player import Player
@@ -16,6 +17,7 @@ from bezier.control_handler_mover import ControlHandlerMover
 from bezier.path_point_selector import PathPointSelector
 ADDENEMY = pygame.USEREVENT + 1
 ENEMYSHOOTS = pygame.USEREVENT + 2
+FREEZE = pygame.USEREVENT + 3
 
 
 class Gameplay(BaseState):
@@ -23,11 +25,13 @@ class Gameplay(BaseState):
         super(Gameplay, self).__init__()
         pygame.time.set_timer(ADDENEMY, 450)
         pygame.time.set_timer(ENEMYSHOOTS, 1000)
+        pygame.time.set_timer(FREEZE, 2000)
 
         self.rect = pygame.Rect((0, 0), (80, 80))
         self.next_state = "GAME_OVER"
         self.sprites = spritesheet.SpriteSheet(constants.SPRITE_SHEET)
         self.explosion_sprites = spritesheet.SpriteSheet(constants.SPRITE_SHEET_EXPLOSION)
+        self.starfield = StarField()
         self.control_points1 = ControlPointCollectionFactory.create_collection1()
         self.control_points2 = ControlPointCollectionFactory.create_collection2()
         self.control_points3 = ControlPointCollectionFactory.create_collection3()
@@ -45,6 +49,7 @@ class Gameplay(BaseState):
         self.number_of_enemies = 13
         self.score = 0
         self.high_score = 0
+        self.freeze = False
 
         self.all_enemies = pygame.sprite.Group()
         self.all_rockets = pygame.sprite.Group()
@@ -64,6 +69,7 @@ class Gameplay(BaseState):
         self.enemies = 0
         self.number_of_enemies = 10
         self.score = 0
+        self.freeze = False
 
         self.all_enemies = pygame.sprite.Group()
         self.all_rockets = pygame.sprite.Group()
@@ -98,7 +104,9 @@ class Gameplay(BaseState):
                     self.wave_count = 0
         if event.type == ENEMYSHOOTS:
             self.enemy_shoots()
-
+        if event.type == FREEZE:
+            if self.freeze:
+                self.done = True
         elif event.type == pygame.KEYUP:
             if event.key == pygame.K_ESCAPE:
                 self.control_points1.save_control_points()
@@ -156,6 +164,7 @@ class Gameplay(BaseState):
                 self.all_sprites.add(rocket)
 
     def draw(self, screen):
+        self.starfield.render(screen)
         pressed_keys = pygame.key.get_pressed()
         for entity in self.all_sprites:
             entity.update(pressed_keys)
@@ -187,8 +196,12 @@ class Gameplay(BaseState):
         result = pygame.sprite.spritecollideany(self.player, self.enemy_rockets)
         if result:
             self.all_sprites.add(Explosion(self.explosion_sprites, result.rect[0], result.rect[1]))
+            self.all_sprites.add(Explosion(self.explosion_sprites, result.rect[0] - 30, result.rect[1] - 30))
+            self.all_sprites.add(Explosion(self.explosion_sprites, result.rect[0] + 30, result.rect[1] + 30))
+            self.all_sprites.add(Explosion(self.explosion_sprites, result.rect[0], result.rect[1] - 30))
             self.kill_sound.play()
-            self.done = True
+            self.freeze = True
+            self.player.kill()
 
     def drawPath(self, screen):
         calculator = PathPointCalculator()

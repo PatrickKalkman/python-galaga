@@ -8,7 +8,7 @@ class GameOver(BaseState):
         self.title = self.font.render("Game Over", True, pygame.Color("white"))
         self.title_rect = self.title.get_rect(center=self.screen_rect.center)
         self.instructions = self.font.render(
-            "Press space to start again, or enter to go to the menu",
+            "Press R to start again, or enter to go to the menu",
             True, pygame.Color("white"))
         instructions_center = (
             self.screen_rect.center[0], self.screen_rect.center[1] + 50)
