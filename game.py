@@ -20,9 +20,8 @@ class Game(object):
         next_state = self.state.next_state
         self.state.done = False
         self.state_name = next_state
-        persistent = self.state.persist
         self.state = self.states[self.state_name]
-        self.state.startup(persistent)
+        self.state.startup()
 
     def update(self, dt):
         if self.state.quit:

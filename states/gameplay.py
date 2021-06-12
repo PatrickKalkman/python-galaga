@@ -4,7 +4,7 @@ import spritesheet
 import constants
 from starfield import StarField
 
-from .base import BaseState
+from .base_state import BaseState
 from sprites.player import Player
 from sprites.rocket import Rocket
 from sprites.enemy import Enemy
@@ -59,7 +59,7 @@ class Gameplay(BaseState):
         self.show_control = False
         self.mover.align_all()
 
-    def startup(self, persistent):
+    def startup(self):
         pygame.mixer.music.load('./assets/sounds/02 Start Music.mp3')
         pygame.mixer.music.play()
         self.player = Player(self.sprites)

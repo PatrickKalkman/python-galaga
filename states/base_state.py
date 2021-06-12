@@ -7,11 +7,10 @@ class BaseState(object):
         self.quit = False
         self.next_state = None
         self.screen_rect = pygame.display.get_surface().get_rect()
-        self.persist = {}
         self.font = pygame.font.Font(None, 32)
 
-    def startup(self, persistent):
-        self.persist = persistent
+    def startup(self):
+        pass
 
     def get_event(self, event):
         pass

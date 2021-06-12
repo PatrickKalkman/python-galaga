@@ -21,8 +21,7 @@ states = {
     "GAME_OVER": GameOver(),
 }
 
-game = Game(screen, states, "GAMEPLAY")
+game = Game(screen, states, "SPLASH")
 game.run()
-
 pygame.quit()
 sys.exit()
