@@ -19,7 +19,7 @@ class ControlPointCollectionFactory():
             114, 646,
             208, 488,
             235, 343))
-            
+
         control_point_quartet_collection.add(ControlPointQuartet(
             235, 343,
             262, 198,
