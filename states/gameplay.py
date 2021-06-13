@@ -139,7 +139,6 @@ class Gameplay(BaseState):
         self.shoot_sound.play()
 
     def enemy_shoots(self):
-        # pick a random enemy
         nr_of_enemies = len(self.all_enemies)
         if nr_of_enemies > 0:
             enemy_index = random.randint(0, nr_of_enemies - 1)
@@ -165,24 +164,24 @@ class Gameplay(BaseState):
 
     def draw(self, screen):
         self.starfield.render(screen)
-        # pressed_keys = pygame.key.get_pressed()
-        # for entity in self.all_sprites:
-        #     entity.update(pressed_keys)
+        pressed_keys = pygame.key.get_pressed()
+        for entity in self.all_sprites:
+            entity.update(pressed_keys)
 
-        # for entity in self.control_sprites:
-        #     entity.update(pressed_keys)
+        for entity in self.control_sprites:
+            entity.update(pressed_keys)
 
-        # for entity in self.all_sprites:
-        #     screen.blit(entity.get_surf(), entity.rect)
+        for entity in self.all_sprites:
+            screen.blit(entity.get_surf(), entity.rect)
 
-        # if self.show_control:
-        #     for entity in self.control_sprites:
-        #         screen.blit(entity.get_surf(), entity.rect)
+        if self.show_control:
+            for entity in self.control_sprites:
+                screen.blit(entity.get_surf(), entity.rect)
 
-        #     self.drawPath(screen)
-        #     self.draw_control_lines(screen)
+            self.drawPath(screen)
+            self.draw_control_lines(screen)
 
-        # self.draw_score(screen)
+        self.draw_score(screen)
 
         result = pygame.sprite.groupcollide(self.all_rockets, self.all_enemies, True, True)
         if result:
