@@ -54,8 +54,8 @@ class Gameplay(BaseState):
         self.all_enemies = pygame.sprite.Group()
         self.all_rockets = pygame.sprite.Group()
         self.enemy_rockets = pygame.sprite.Group()
-        self.shoot_sound = pygame.mixer.Sound("./assets/sounds/13 Fighter Shot1.mp3")
-        self.kill_sound = pygame.mixer.Sound("./assets/sounds/kill.mp3")
+        self.shoot_sound = pygame.mixer.Sound("./assets/sounds/13 Fighter Shot1.ogg")
+        self.kill_sound = pygame.mixer.Sound("./assets/sounds/kill.ogg")
         self.show_control = False
         self.mover.align_all()
 
@@ -74,8 +74,8 @@ class Gameplay(BaseState):
         self.all_enemies = pygame.sprite.Group()
         self.all_rockets = pygame.sprite.Group()
         self.enemy_rockets = pygame.sprite.Group()
-        self.shoot_sound = pygame.mixer.Sound("./assets/sounds/13 Fighter Shot1.mp3")
-        self.kill_sound = pygame.mixer.Sound("./assets/sounds/kill.mp3")
+        self.shoot_sound = pygame.mixer.Sound("./assets/sounds/13 Fighter Shot1.ogg")
+        self.kill_sound = pygame.mixer.Sound("./assets/sounds/kill.ogg")
         self.show_control = False
         self.mover.align_all()
 
